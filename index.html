@@ -3,297 +3,205 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Combine IC PDF — Gambar IC ke PDF A4 dengan Palang Tujuan</title>
+
+<meta name="description" content="Gabungkan IC depan dan belakang menjadi PDF A4 tanpa perlu memuat naik IC ke server. Semua data diproses terus pada peranti anda.">
+
+<!-- WhatsApp / Facebook / social media preview -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Gabung IC Depan & Belakang → PDF A4">
+<meta property="og:description" content="Gabungkan IC depan dan belakang menjadi PDF tanpa perlu memuat naik IC ke server. Semua data diproses terus pada peranti anda.">
+<meta property="og:url" content="https://cheeeyosss.github.io/frontback-ic-to-pdf/">
+<meta property="og:image" content="https://cheeeyosss.github.io/frontback-ic-to-pdf/preview.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Gabung IC Depan & Belakang → PDF A4">
+<meta name="twitter:description" content="Gabungkan IC depan dan belakang menjadi PDF tanpa perlu memuat naik IC ke server. Semua data diproses terus pada peranti anda.">
+<meta name="twitter:image" content="https://cheeeyosss.github.io/frontback-ic-to-pdf/preview.png">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Mono:wght@500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 <style>
-  :root{
-    --navy:#16233F;
-    --navy-light:#28395c;
-    --paper:#F6F2E8;
-    --paper-card:#FFFFFF;
-    --stamp:#5A5A52;
-    --stamp-dark:#3F3F39;
-    --ink:#2B2A26;
-    --ink-soft:#635F55;
-    --line:#DCD5C4;
-    --ok:#3F7D58;
-  }
-  *{box-sizing:border-box;}
-  body{
-    margin:0;
-    background:var(--paper);
-    color:var(--ink);
-    font-family:'Inter',sans-serif;
-    line-height:1.55;
-  }
-  .wrap{max-width:960px;margin:0 auto;padding:0 24px 80px;}
-
-  header.hero{
-    padding:56px 24px 40px;
-    max-width:960px;margin:0 auto;
-    display:flex;gap:40px;align-items:center;flex-wrap:wrap;
-  }
-  .hero-text{flex:1 1 380px;}
-  .eyebrow{
-    font-family:'IBM Plex Mono',monospace;
-    font-size:12px;letter-spacing:.08em;text-transform:uppercase;
-    color:var(--stamp);margin:0 0 14px;
-  }
-  h1{
-    font-family:'Fraunces',serif;
-    font-weight:600;
-    font-size:40px;
-    line-height:1.12;
-    margin:0 0 16px;
-    color:var(--navy);
-  }
-  .hero-text p{
-    color:var(--ink-soft);
-    font-size:16px;
-    max-width:46ch;
-    margin:0 0 8px;
-  }
-  .hero-note{
-    display:inline-flex;align-items:center;gap:8px;
-    margin-top:16px;font-size:13px;color:var(--ok);
-    font-weight:500;
-  }
-  .hero-note svg{flex:none;}
-
-  .stamp-demo{
-    flex:0 0 260px;
-    width:260px;height:170px;
-    background:linear-gradient(135deg,#e9e4d6 0%,#ded6c1 100%);
-    border:1px solid var(--line);
-    border-radius:10px;
-    position:relative;
-    overflow:hidden;
-    box-shadow:0 1px 0 rgba(0,0,0,.03);
-  }
-  .stamp-demo .card-lines{
-    position:absolute;inset:0;padding:18px;
-  }
-  .stamp-demo .card-lines div{
-    height:8px;background:rgba(22,35,63,.12);border-radius:2px;margin-bottom:9px;
-  }
-  .stamp-demo .card-lines div:nth-child(1){width:55%;height:22px;background:rgba(22,35,63,.18);margin-bottom:14px;}
-  .stamp-demo .card-lines div:nth-child(2){width:80%;}
-  .stamp-demo .card-lines div:nth-child(3){width:65%;}
-  .stamp-demo .card-lines div:nth-child(4){width:70%;}
-  .stamp-demo .band{
-    position:absolute;
-    top:16px;right:-58px;width:190px;
-    transform:rotate(45deg);
-    background:var(--stamp);
-    color:#fff;
-    text-align:center;
-    padding:5px 0;
-    font-family:'IBM Plex Mono',monospace;
-    font-size:9.5px;
-    letter-spacing:.04em;
-    font-weight:500;
-    box-shadow:0 2px 6px rgba(0,0,0,.15);
-  }
-
-  section{margin-top:8px;}
-  .card{
-    background:var(--paper-card);
-    border:1px solid var(--line);
-    border-radius:12px;
-    padding:28px;
-    margin-bottom:20px;
-  }
-  .card h2{
-    font-family:'Fraunces',serif;
-    font-weight:600;
-    font-size:18px;
-    color:var(--navy);
-    margin:0 0 4px;
-  }
-  .card .sub{color:var(--ink-soft);font-size:14px;margin:0 0 20px;}
-
-  .step-label{
-    display:inline-flex;align-items:center;justify-content:center;
-    width:22px;height:22px;border-radius:50%;
-    background:var(--navy);color:#fff;
-    font-family:'IBM Plex Mono',monospace;font-size:12px;
-    margin-right:10px;flex:none;
-  }
-  .card h2{display:flex;align-items:center;}
-
-  .upload-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-  @media(max-width:640px){.upload-grid{grid-template-columns:1fr;}}
-
-  .dropzone{
-    border:1.5px dashed var(--line);
-    border-radius:10px;
-    padding:18px;
-    text-align:center;
-    cursor:pointer;
-    background:#FCFAF4;
-    transition:border-color .15s, background .15s;
-    position:relative;
-    min-height:150px;
-    display:flex;flex-direction:column;align-items:center;justify-content:center;
-  }
-  .dropzone:hover, .dropzone.drag{
-    border-color:var(--stamp);
-    background:#fff8f4;
-  }
-  .dropzone.filled{
-    padding:0;
-    border-style:solid;
-    border-color:var(--line);
-  }
-  .dropzone input{display:none;}
-  .dz-icon{color:var(--ink-soft);margin-bottom:8px;}
-  .dz-label{font-size:14px;font-weight:500;color:var(--navy);}
-  .dz-hint{font-size:12px;color:var(--ink-soft);margin-top:4px;}
-  .dz-preview{
-    width:100%;height:150px;object-fit:cover;border-radius:9px;display:block;
-  }
-  .dz-remove{
-    position:absolute;top:8px;right:8px;
-    background:rgba(22,35,63,.85);color:#fff;border:none;
-    width:26px;height:26px;border-radius:50%;
-    cursor:pointer;font-size:14px;line-height:1;
-    display:flex;align-items:center;justify-content:center;
-  }
-
-  label.field-label{
-    display:block;font-size:13px;font-weight:500;color:var(--navy);margin-bottom:8px;
-  }
-  input[type="text"]{
-    width:100%;
-    padding:12px 14px;
-    border:1px solid var(--line);
-    border-radius:8px;
-    font-size:15px;
-    font-family:'Inter',sans-serif;
-    background:#FCFAF4;
-    color:var(--ink);
-  }
-  input[type="text"]:focus{
-    outline:none;border-color:var(--stamp);
-    box-shadow:0 0 0 3px rgba(90,90,82,.14);
-  }
-  .preview-text{
-    margin-top:10px;font-size:12px;color:var(--ink-soft);
-    font-family:'IBM Plex Mono',monospace;
-  }
-  .preview-text b{color:var(--stamp);}
-
-  .toggle-row{
-    display:flex;align-items:center;justify-content:space-between;gap:16px;
-    margin-bottom:20px;padding-bottom:20px;
-    border-bottom:1px solid var(--line);
-  }
-  .toggle-row .field-label{margin-bottom:2px;}
-  .toggle-row .toggle-hint{margin:0;font-size:13px;color:var(--ink-soft);}
-  .switch{position:relative;display:inline-block;width:44px;height:26px;flex:none;}
-  .switch input{display:none;}
-  .switch-slider{
-    position:absolute;inset:0;cursor:pointer;
-    background:#C9C4B4;border-radius:26px;
-    transition:background .15s;
-  }
-  .switch-slider::before{
-    content:"";position:absolute;height:20px;width:20px;left:3px;top:3px;
-    background:#fff;border-radius:50%;
-    transition:transform .15s;
-    box-shadow:0 1px 2px rgba(0,0,0,.2);
-  }
-  .switch input:checked + .switch-slider{background:var(--ok);}
-  .switch input:checked + .switch-slider::before{transform:translateX(18px);}
-
-  .watermark-options{transition:opacity .15s;}
-  .watermark-options.is-disabled{opacity:.45;pointer-events:none;}
-
-  .slider-row{margin-top:20px;padding-top:18px;border-top:1px solid var(--line);}
-  .slider-control{display:flex;align-items:center;gap:14px;}
-  .slider-control input[type="range"]{
-    flex:1;
-    -webkit-appearance:none;
-    appearance:none;
-    height:4px;
-    border-radius:2px;
-    background:var(--line);
-    outline:none;
-  }
-  .slider-control input[type="range"]::-webkit-slider-thumb{
-    -webkit-appearance:none;
-    width:18px;height:18px;border-radius:50%;
-    background:var(--navy);
-    cursor:pointer;
-    border:2px solid #fff;
-    box-shadow:0 0 0 1px var(--line);
-  }
-  .slider-control input[type="range"]::-moz-range-thumb{
-    width:18px;height:18px;border-radius:50%;
-    background:var(--navy);
-    cursor:pointer;
-    border:2px solid #fff;
-    box-shadow:0 0 0 1px var(--line);
-  }
-  .slider-value{
-    font-family:'IBM Plex Mono',monospace;
-    font-size:13px;font-weight:500;
-    color:var(--navy);
-    min-width:42px;text-align:right;
-  }
-
-  .preview-wrap{
-    display:flex;flex-direction:column;align-items:center;gap:12px;
-    margin-top:8px;
-  }
-  #previewCanvas{
-    max-width:100%;
-    border:1px solid var(--line);
-    border-radius:8px;
-    background:#fff;
-  }
-  .preview-empty{
-    color:var(--ink-soft);font-size:14px;text-align:center;padding:40px 20px;
-  }
-
-  .actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
-  button.primary{
-    background:var(--navy);color:#fff;border:none;
-    padding:14px 26px;border-radius:8px;
-    font-size:15px;font-weight:500;
-    cursor:pointer;
-    font-family:'Inter',sans-serif;
-    display:inline-flex;align-items:center;gap:8px;
-    transition:background .15s;
-  }
-  button.primary:hover{background:var(--navy-light);}
-  button.primary:disabled{
-    background:#B4B2A9;cursor:not-allowed;
-  }
-  .status{font-size:13px;color:var(--ink-soft);}
-  .status.ok{color:var(--ok);font-weight:500;}
-
-  footer{
-    max-width:960px;margin:40px auto 0;padding:20px 24px 0;
-    border-top:1px solid var(--line);
-    font-size:13px;color:var(--ink-soft);
-    display:flex;gap:10px;align-items:flex-start;
-  }
-  footer svg{flex:none;margin-top:2px;color:var(--ok);}
+:root{
+  --navy:#16233F;
+  --navy-light:#28395c;
+  --paper:#F6F2E8;
+  --paper-card:#FFFFFF;
+  --stamp:#5A5A52;
+  --stamp-dark:#3F3F39;
+  --ink:#2B2A26;
+  --ink-soft:#635F55;
+  --line:#DCD5C4;
+  --ok:#3F7D58;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:'Inter',sans-serif;line-height:1.55;
+}
+.wrap{max-width:960px;margin:0 auto;padding:0 24px 80px;}
+header.hero{
+  padding:56px 24px 40px;max-width:960px;margin:0 auto;
+  display:flex;gap:40px;align-items:center;flex-wrap:wrap;
+}
+.hero-text{flex:1 1 380px;}
+.eyebrow{
+  font-family:'IBM Plex Mono',monospace;font-size:12px;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--stamp);margin:0 0 14px;
+}
+h1{
+  font-family:'Fraunces',serif;font-weight:600;font-size:40px;
+  line-height:1.12;margin:0 0 16px;color:var(--navy);
+}
+.hero-text p{color:var(--ink-soft);font-size:16px;max-width:46ch;margin:0 0 8px;}
+.hero-note{
+  display:inline-flex;align-items:center;gap:8px;margin-top:16px;
+  font-size:13px;color:var(--ok);font-weight:500;
+}
+.hero-note svg{flex:none;}
+.stamp-demo{
+  flex:0 0 260px;width:260px;height:170px;
+  background:linear-gradient(135deg,#e9e4d6 0%,#ded6c1 100%);
+  border:1px solid var(--line);border-radius:10px;position:relative;
+  overflow:hidden;box-shadow:0 1px 0 rgba(0,0,0,.03);
+}
+.stamp-demo .card-lines{position:absolute;inset:0;padding:18px;}
+.stamp-demo .card-lines div{
+  height:8px;background:rgba(22,35,63,.12);border-radius:2px;margin-bottom:9px;
+}
+.stamp-demo .card-lines div:nth-child(1){
+  width:55%;height:22px;background:rgba(22,35,63,.18);margin-bottom:14px;
+}
+.stamp-demo .card-lines div:nth-child(2){width:80%;}
+.stamp-demo .card-lines div:nth-child(3){width:65%;}
+.stamp-demo .card-lines div:nth-child(4){width:70%;}
+.stamp-demo .band{
+  position:absolute;top:16px;right:-58px;width:190px;transform:rotate(45deg);
+  background:var(--stamp);color:#fff;text-align:center;padding:5px 0;
+  font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.04em;
+  font-weight:500;box-shadow:0 2px 6px rgba(0,0,0,.15);
+}
+section{margin-top:8px;}
+.card{
+  background:var(--paper-card);border:1px solid var(--line);border-radius:12px;
+  padding:28px;margin-bottom:20px;
+}
+.card h2{
+  font-family:'Fraunces',serif;font-weight:600;font-size:18px;color:var(--navy);margin:0 0 4px;
+  display:flex;align-items:center;
+}
+.card .sub{color:var(--ink-soft);font-size:14px;margin:0 0 20px;}
+.step-label{
+  display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;
+  border-radius:50%;background:var(--navy);color:#fff;
+  font-family:'IBM Plex Mono',monospace;font-size:12px;margin-right:10px;flex:none;
+}
+.upload-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:640px){.upload-grid{grid-template-columns:1fr;}}
+.dropzone{
+  border:1.5px dashed var(--line);border-radius:10px;padding:18px;text-align:center;
+  cursor:pointer;background:#FCFAF4;transition:border-color .15s,background .15s;
+  position:relative;min-height:150px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+}
+.dropzone:hover,.dropzone.drag{border-color:var(--stamp);background:#fff8f4;}
+.dropzone.filled{padding:0;border-style:solid;border-color:var(--line);}
+.dropzone input{display:none;}
+.dz-icon{color:var(--ink-soft);margin-bottom:8px;}
+.dz-label{font-size:14px;font-weight:500;color:var(--navy);}
+.dz-hint{font-size:12px;color:var(--ink-soft);margin-top:4px;}
+.dz-preview{width:100%;height:150px;object-fit:cover;border-radius:9px;display:block;}
+.dz-remove{
+  position:absolute;top:8px;right:8px;background:rgba(22,35,63,.85);color:#fff;
+  border:none;width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:14px;
+  line-height:1;display:flex;align-items:center;justify-content:center;
+}
+label.field-label{display:block;font-size:13px;font-weight:500;color:var(--navy);margin-bottom:8px;}
+input[type="text"]{
+  width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:8px;
+  font-size:15px;font-family:'Inter',sans-serif;background:#FCFAF4;color:var(--ink);
+}
+input[type="text"]:focus{
+  outline:none;border-color:var(--stamp);box-shadow:0 0 0 3px rgba(90,90,82,.14);
+}
+.preview-text{margin-top:10px;font-size:12px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;}
+.preview-text b{color:var(--stamp);}
+.toggle-row{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px;
+  padding-bottom:20px;border-bottom:1px solid var(--line);
+}
+.toggle-row .field-label{margin-bottom:2px;}
+.toggle-row .toggle-hint{margin:0;font-size:13px;color:var(--ink-soft);}
+.switch{position:relative;display:inline-block;width:44px;height:26px;flex:none;}
+.switch input{display:none;}
+.switch-slider{
+  position:absolute;inset:0;cursor:pointer;background:#C9C4B4;border-radius:26px;transition:background .15s;
+}
+.switch-slider::before{
+  content:"";position:absolute;height:20px;width:20px;left:3px;top:3px;background:#fff;
+  border-radius:50%;transition:transform .15s;box-shadow:0 1px 2px rgba(0,0,0,.2);
+}
+.switch input:checked + .switch-slider{background:var(--ok);}
+.switch input:checked + .switch-slider::before{transform:translateX(18px);}
+.watermark-options{transition:opacity .15s;}
+.watermark-options.is-disabled{opacity:.45;pointer-events:none;}
+.slider-row{margin-top:20px;padding-top:18px;border-top:1px solid var(--line);}
+.slider-control{display:flex;align-items:center;gap:14px;}
+.slider-control input[type="range"]{
+  flex:1;-webkit-appearance:none;appearance:none;height:4px;border-radius:2px;
+  background:var(--line);outline:none;
+}
+.slider-control input[type="range"]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--navy);
+  cursor:pointer;border:2px solid #fff;box-shadow:0 0 0 1px var(--line);
+}
+.slider-control input[type="range"]::-moz-range-thumb{
+  width:18px;height:18px;border-radius:50%;background:var(--navy);cursor:pointer;
+  border:2px solid #fff;box-shadow:0 0 0 1px var(--line);
+}
+.slider-value{
+  font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:500;
+  color:var(--navy);min-width:42px;text-align:right;
+}
+.preview-wrap{display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:8px;}
+#previewCanvas{max-width:100%;border:1px solid var(--line);border-radius:8px;background:#fff;}
+.preview-empty{color:var(--ink-soft);font-size:14px;text-align:center;padding:40px 20px;}
+.actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+button.primary{
+  background:var(--navy);color:#fff;border:none;padding:14px 26px;border-radius:8px;
+  font-size:15px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;
+  display:inline-flex;align-items:center;gap:8px;transition:background .15s;
+}
+button.primary:hover{background:var(--navy-light);}
+button.primary:disabled{background:#B4B2A9;cursor:not-allowed;}
+.status{font-size:13px;color:var(--ink-soft);}
+.status.ok{color:var(--ok);font-weight:500;}
+footer{
+  max-width:960px;margin:40px auto 0;padding:20px 24px 0;border-top:1px solid var(--line);
+  font-size:13px;color:var(--ink-soft);display:flex;gap:10px;align-items:flex-start;
+}
+footer svg{flex:none;margin-top:2px;color:var(--ok);}
 </style>
 </head>
-<body>
 
+<body>
 <header class="hero">
   <div class="hero-text">
     <p class="eyebrow">Jana IC → PDF</p>
     <h1>Gambar IC jadi satu PDF A4, siap berpalang tujuan.</h1>
     <p>Upload gambar IC depan dan belakang, taip tujuan kegunaan, dan muat turun PDF yang siap untuk dihantar — semuanya tanpa gambar anda meninggalkan peranti ini.</p>
     <div class="hero-note">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/>
+        <path d="M9 12l2 2 4-4"/>
+      </svg>
       Diproses 100% dalam pelayar anda — tidak muat naik ke server
     </div>
   </div>
@@ -304,7 +212,6 @@
 </header>
 
 <div class="wrap">
-
   <section class="card">
     <h2><span class="step-label">1</span>Upload gambar IC</h2>
     <p class="sub">Format JPG atau PNG. Gambar akan dimuatkan atas-bawah dalam satu muka surat A4.</p>
@@ -312,15 +219,22 @@
       <div class="dropzone" id="dzDepan">
         <input type="file" id="fileDepan" accept="image/*">
         <div class="dz-empty">
-          <svg class="dz-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-4 4-3-3-5 5"/></svg>
+          <svg class="dz-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+            <rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/>
+            <path d="M21 16l-5-5-4 4-3-3-5 5"/>
+          </svg>
           <div class="dz-label">IC bahagian depan</div>
           <div class="dz-hint">Klik atau seret gambar ke sini</div>
         </div>
       </div>
+
       <div class="dropzone" id="dzBelakang">
         <input type="file" id="fileBelakang" accept="image/*">
         <div class="dz-empty">
-          <svg class="dz-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-4 4-3-3-5 5"/></svg>
+          <svg class="dz-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+            <rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/>
+            <path d="M21 16l-5-5-4 4-3-3-5 5"/>
+          </svg>
           <div class="dz-label">IC bahagian belakang</div>
           <div class="dz-hint">Klik atau seret gambar ke sini</div>
         </div>
@@ -380,17 +294,22 @@
     <p class="sub">Fail PDF saiz A4, sedia untuk cetak atau hantar terus.</p>
     <div class="actions">
       <button class="primary" id="btnGenerate" disabled>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+          <path d="M7 10l5 5 5-5"/><path d="M12 15V3"/>
+        </svg>
         Muat turun PDF
       </button>
       <span class="status" id="statusText">Upload kedua-dua gambar dan isi tujuan dahulu</span>
     </div>
   </section>
-
 </div>
 
 <footer>
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg>
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/>
+    <path d="M9 12l2 2 4-4"/>
+  </svg>
   <span>Gambar IC anda tidak akan dimuat naik ke mana-mana server — semua proses (termasuk jana PDF) berlaku terus di dalam browser anda dan hilang bila anda tutup tab ini.</span>
 </footer>
 
@@ -420,7 +339,10 @@ let watermarkEnabled = watermarkToggle.checked;
 
 function setupDropzone(dz, input, onImage){
   dz.addEventListener('click', () => input.click());
-  dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag'); });
+  dz.addEventListener('dragover', e => {
+    e.preventDefault();
+    dz.classList.add('drag');
+  });
   dz.addEventListener('dragleave', () => dz.classList.remove('drag'));
   dz.addEventListener('drop', e => {
     e.preventDefault();
@@ -436,8 +358,9 @@ function setupDropzone(dz, input, onImage){
 
 function handleFile(file, dz, onImage){
   if (!file.type.startsWith('image/')) return;
+
   const reader = new FileReader();
-  reader.onload = (e) => {
+  reader.onload = e => {
     const img = new Image();
     img.onload = () => {
       onImage(img);
@@ -455,7 +378,8 @@ function renderDropzoneFilled(dz, dataUrl){
     <img class="dz-preview" src="${dataUrl}" alt="Preview gambar IC">
     <button class="dz-remove" type="button" aria-label="Buang gambar">&times;</button>
   `;
-  dz.querySelector('.dz-remove').addEventListener('click', (ev) => {
+
+  dz.querySelector('.dz-remove').addEventListener('click', ev => {
     ev.stopPropagation();
     resetDropzone(dz);
   });
@@ -465,22 +389,30 @@ function resetDropzone(dz){
   dz.classList.remove('filled');
   dz.innerHTML = `
     <div class="dz-empty">
-      <svg class="dz-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-4 4-3-3-5 5"/></svg>
+      <svg class="dz-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+        <rect x="3" y="4" width="18" height="16" rx="2"/>
+        <circle cx="9" cy="10" r="2"/>
+        <path d="M21 16l-5-5-4 4-3-3-5 5"/>
+      </svg>
       <div class="dz-label">${dz.id === 'dzDepan' ? 'IC bahagian depan' : 'IC bahagian belakang'}</div>
       <div class="dz-hint">Klik atau seret gambar ke sini</div>
     </div>
   `;
-  if (dz.id === 'dzDepan') { imgDepan = null; fileDepan.value = ''; }
-  else { imgBelakang = null; fileBelakang.value = ''; }
+
+  if (dz.id === 'dzDepan') {
+    imgDepan = null;
+    fileDepan.value = '';
+  } else {
+    imgBelakang = null;
+    fileBelakang.value = '';
+  }
   updateState();
 }
 
-setupDropzone(dzDepan, fileDepan, (img) => imgDepan = img);
-setupDropzone(dzBelakang, fileBelakang, (img) => imgBelakang = img);
+setupDropzone(dzDepan, fileDepan, img => imgDepan = img);
+setupDropzone(dzBelakang, fileBelakang, img => imgBelakang = img);
 
-tujuanInput.addEventListener('input', () => {
-  updateState();
-});
+tujuanInput.addEventListener('input', updateState);
 
 ribbonScaleInput.addEventListener('input', () => {
   ribbonScale = parseInt(ribbonScaleInput.value, 10) / 100;
@@ -501,11 +433,9 @@ watermarkToggle.addEventListener('change', () => {
 });
 
 function getRibbonColor(darknessPct){
-  // 0% = light gray, 100% = near-black. Keeps a slight warm/olive tint
-  // to match the rest of the site's palette instead of pure neutral gray.
   const t = Math.min(Math.max(darknessPct, 0), 100) / 100;
-  const light = { r: 214, g: 214, b: 206 };
-  const dark  = { r: 32,  g: 32,  b: 27  };
+  const light = {r:214, g:214, b:206};
+  const dark = {r:32, g:32, b:27};
   const r = Math.round(light.r + (dark.r - light.r) * t);
   const g = Math.round(light.g + (dark.g - light.g) * t);
   const b = Math.round(light.b + (dark.b - light.b) * t);
@@ -518,13 +448,9 @@ function getTujuanText(){
 }
 
 function drawCornerRibbon(ctx, bx, by, boxW, boxH, text, scale, darknessPct){
-  // Diagonal ribbon confined to the top-right corner of one image box,
-  // so it never crosses the middle of the IC where the details are.
-  // Outline only (no fill) so the photo underneath stays fully visible.
-  // `scale` (default 1) lets the user size the ribbon/text via the slider.
-  // `darknessPct` (0-100) lets the user lighten/darken the ribbon color.
   scale = scale || 1;
   const rgb = getRibbonColor(darknessPct === undefined ? 80 : darknessPct);
+
   ctx.save();
   ctx.beginPath();
   ctx.rect(bx, by, boxW, boxH);
@@ -532,7 +458,6 @@ function drawCornerRibbon(ctx, bx, by, boxW, boxH, text, scale, darknessPct){
 
   const ribbonLen = Math.min(boxW, boxH) * 1.15;
   const bandHeight = Math.max(Math.min(boxW, boxH) * 0.055, 9) * scale;
-  // Anchor point sits just outside the corner, band runs through it at 45deg
   const anchorX = bx + boxW - Math.min(boxW, boxH) * 0.22;
   const anchorY = by + Math.min(boxW, boxH) * 0.22;
 
@@ -544,12 +469,15 @@ function drawCornerRibbon(ctx, bx, by, boxW, boxH, text, scale, darknessPct){
   ctx.lineWidth = lineW;
   ctx.strokeRect(-ribbonLen, -bandHeight/2, ribbonLen*2, bandHeight);
 
-  const fontSize = Math.max(Math.min(bandHeight * 0.42, boxW * 0.016 * scale), 6.5 * scale);
+  const fontSize = Math.max(
+    Math.min(bandHeight * 0.42, boxW * 0.016 * scale),
+    6.5 * scale
+  );
+
   ctx.font = `600 ${fontSize}px 'IBM Plex Mono', monospace`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
 
-  // White halo behind the text so it stays legible over busy photo backgrounds
   ctx.lineWidth = fontSize * 0.32;
   ctx.strokeStyle = 'rgba(255,255,255,0.85)';
   ctx.lineJoin = 'round';
@@ -567,6 +495,7 @@ function drawImageContain(ctx, img, x, y, boxW, boxH){
   const h = img.height * scale;
   const dx = x + (boxW - w) / 2;
   const dy = y + (boxH - h) / 2;
+
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(x, y, boxW, boxH);
   ctx.drawImage(img, dx, dy, w, h);
@@ -578,20 +507,22 @@ function renderPreview(){
     previewEmpty.style.display = 'block';
     return;
   }
+
   previewCanvas.style.display = 'block';
   previewEmpty.style.display = 'none';
 
   const ctx = previewCanvas.getContext('2d');
   const W = previewCanvas.width;
   const H = previewCanvas.height;
-  ctx.clearRect(0,0,W,H);
+
+  ctx.clearRect(0, 0, W, H);
   ctx.fillStyle = '#ffffff';
-  ctx.fillRect(0,0,W,H);
+  ctx.fillRect(0, 0, W, H);
 
   const margin = W * 0.045;
   const gap = H * 0.02;
-  const usableW = W - margin*2;
-  const usableH = H - margin*2;
+  const usableW = W - margin * 2;
+  const usableH = H - margin * 2;
   const slotH = (usableH - gap) / 2;
 
   const depanY = margin;
@@ -632,25 +563,25 @@ function updateState(){
 }
 
 function buildFullPageCanvas(){
-  // Render the whole A4 page (both images + diagonal watermark) at print
-  // resolution onto one canvas, exactly like the live preview.
   const DPI = 200;
-  const pageWmm = 210, pageHmm = 297;
+  const pageWmm = 210;
+  const pageHmm = 297;
   const pxPerMm = DPI / 25.4;
   const W = Math.round(pageWmm * pxPerMm);
   const H = Math.round(pageHmm * pxPerMm);
 
   const c = document.createElement('canvas');
-  c.width = W; c.height = H;
-  const ctx = c.getContext('2d');
+  c.width = W;
+  c.height = H;
 
+  const ctx = c.getContext('2d');
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, W, H);
 
   const margin = 10 * pxPerMm;
   const gap = 5 * pxPerMm;
-  const usableW = W - margin*2;
-  const usableH = H - margin*2;
+  const usableW = W - margin * 2;
+  const usableH = H - margin * 2;
   const slotH = (usableH - gap) / 2;
 
   const depanY = margin;
@@ -676,16 +607,23 @@ btnGenerate.addEventListener('click', () => {
 
   setTimeout(() => {
     const pageCanvas = buildFullPageCanvas();
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({ unit: 'mm', format: 'a4' });
-    doc.addImage(pageCanvas.toDataURL('image/jpeg', 0.93), 'JPEG', 0, 0, 210, 297);
+    const {jsPDF} = window.jspdf;
+    const doc = new jsPDF({unit:'mm', format:'a4'});
+
+    doc.addImage(
+      pageCanvas.toDataURL('image/jpeg', 0.93),
+      'JPEG',
+      0, 0, 210, 297
+    );
+
     doc.save('ic_' + Date.now() + '.pdf');
 
     statusText.textContent = 'PDF dimuat turun';
     statusText.classList.add('ok');
   }, 30);
 });
-</script>
 
+watermarkOptions.classList.toggle('is-disabled', !watermarkEnabled);
+</script>
 </body>
 </html>
