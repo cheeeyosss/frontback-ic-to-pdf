@@ -186,6 +186,32 @@
   }
   .preview-text b{color:var(--stamp);}
 
+  .toggle-row{
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+    margin-bottom:20px;padding-bottom:20px;
+    border-bottom:1px solid var(--line);
+  }
+  .toggle-row .field-label{margin-bottom:2px;}
+  .toggle-row .toggle-hint{margin:0;font-size:13px;color:var(--ink-soft);}
+  .switch{position:relative;display:inline-block;width:44px;height:26px;flex:none;}
+  .switch input{display:none;}
+  .switch-slider{
+    position:absolute;inset:0;cursor:pointer;
+    background:#C9C4B4;border-radius:26px;
+    transition:background .15s;
+  }
+  .switch-slider::before{
+    content:"";position:absolute;height:20px;width:20px;left:3px;top:3px;
+    background:#fff;border-radius:50%;
+    transition:transform .15s;
+    box-shadow:0 1px 2px rgba(0,0,0,.2);
+  }
+  .switch input:checked + .switch-slider{background:var(--ok);}
+  .switch input:checked + .switch-slider::before{transform:translateX(18px);}
+
+  .watermark-options{transition:opacity .15s;}
+  .watermark-options.is-disabled{opacity:.45;pointer-events:none;}
+
   .slider-row{margin-top:20px;padding-top:18px;border-top:1px solid var(--line);}
   .slider-control{display:flex;align-items:center;gap:14px;}
   .slider-control input[type="range"]{
@@ -304,24 +330,38 @@
 
   <section class="card">
     <h2><span class="step-label">2</span>Tujuan kegunaan</h2>
-    <p class="sub">Taip ayat penuh ikut suka anda — teks ini akan dipaparkan terus (tanpa diubah) sebagai palang senget di atas kedua-dua gambar.</p>
-    <label class="field-label" for="tujuan">Teks pada palang</label>
-    <input type="text" id="tujuan" placeholder="cth: UNTUK KEGUNAAN PERMOHONAN AKAUN BANK MAYBANK SAHAJA" maxlength="80">
-    <div class="preview-text">Akan tertera sebagai: <b id="tujuanPreviewText">[TAIP TEKS ANDA]</b></div>
 
-    <div class="slider-row">
-      <label class="field-label" for="ribbonScale">Saiz palang &amp; tulisan</label>
-      <div class="slider-control">
-        <input type="range" id="ribbonScale" min="40" max="160" value="90" step="5">
-        <span class="slider-value" id="ribbonScaleValue">90%</span>
+    <div class="toggle-row">
+      <div>
+        <label class="field-label">Tanpa Palang &amp; watermark</label>
+        <p class="toggle-hint">Padam palang serong jika anda tidak mahu sebarang teks tertera di atas gambar.</p>
       </div>
+      <label class="switch">
+        <input type="checkbox" id="watermarkToggle" checked>
+        <span class="switch-slider"></span>
+      </label>
     </div>
 
-    <div class="slider-row">
-      <label class="field-label" for="ribbonDarkness">Kecerahan &amp; kegelapan warna</label>
-      <div class="slider-control">
-        <input type="range" id="ribbonDarkness" min="0" max="100" value="80" step="5">
-        <span class="slider-value" id="ribbonDarknessValue">80%</span>
+    <div class="watermark-options" id="watermarkOptions">
+      <p class="sub">Taip ayat penuh ikut suka anda — teks ini akan dipaparkan terus (tanpa diubah) sebagai palang senget di atas kedua-dua gambar.</p>
+      <label class="field-label" for="tujuan">Teks pada palang</label>
+      <input type="text" id="tujuan" placeholder="cth: UNTUK KEGUNAAN PERMOHONAN AKAUN BANK MAYBANK SAHAJA" maxlength="80">
+      <div class="preview-text">Akan tertera sebagai: <b id="tujuanPreviewText">[TAIP TEKS ANDA]</b></div>
+
+      <div class="slider-row">
+        <label class="field-label" for="ribbonScale">Saiz palang &amp; tulisan</label>
+        <div class="slider-control">
+          <input type="range" id="ribbonScale" min="40" max="160" value="90" step="5">
+          <span class="slider-value" id="ribbonScaleValue">90%</span>
+        </div>
+      </div>
+
+      <div class="slider-row">
+        <label class="field-label" for="ribbonDarkness">Kecerahan &amp; kegelapan warna</label>
+        <div class="slider-control">
+          <input type="range" id="ribbonDarkness" min="0" max="100" value="80" step="5">
+          <span class="slider-value" id="ribbonDarknessValue">80%</span>
+        </div>
       </div>
     </div>
   </section>
@@ -369,11 +409,14 @@ const ribbonScaleInput = document.getElementById('ribbonScale');
 const ribbonScaleValue = document.getElementById('ribbonScaleValue');
 const ribbonDarknessInput = document.getElementById('ribbonDarkness');
 const ribbonDarknessValue = document.getElementById('ribbonDarknessValue');
+const watermarkToggle = document.getElementById('watermarkToggle');
+const watermarkOptions = document.getElementById('watermarkOptions');
 
 let imgDepan = null;
 let imgBelakang = null;
 let ribbonDarkness = parseInt(ribbonDarknessInput.value, 10) || 80;
 let ribbonScale = (parseInt(ribbonScaleInput.value, 10) || 90) / 100;
+let watermarkEnabled = watermarkToggle.checked;
 
 function setupDropzone(dz, input, onImage){
   dz.addEventListener('click', () => input.click());
@@ -451,6 +494,12 @@ ribbonDarknessInput.addEventListener('input', () => {
   renderPreview();
 });
 
+watermarkToggle.addEventListener('change', () => {
+  watermarkEnabled = watermarkToggle.checked;
+  watermarkOptions.classList.toggle('is-disabled', !watermarkEnabled);
+  updateState();
+});
+
 function getRibbonColor(darknessPct){
   // 0% = light gray, 100% = near-black. Keeps a slight warm/olive tint
   // to match the rest of the site's palette instead of pure neutral gray.
@@ -465,7 +514,7 @@ function getRibbonColor(darknessPct){
 
 function getTujuanText(){
   const val = tujuanInput.value.trim();
-  return val ? val.toUpperCase() : 'UNTUK KEGUNAAN [TAIP TEKS ANDA] SAHAJA';
+  return val ? val.toUpperCase() : '[TAIP TEKS ANDA]';
 }
 
 function drawCornerRibbon(ctx, bx, by, boxW, boxH, text, scale, darknessPct){
@@ -551,9 +600,11 @@ function renderPreview(){
   drawImageContain(ctx, imgDepan, margin, depanY, usableW, slotH);
   drawImageContain(ctx, imgBelakang, margin, belakangY, usableW, slotH);
 
-  const text = getTujuanText();
-  drawCornerRibbon(ctx, margin, depanY, usableW, slotH, text, ribbonScale, ribbonDarkness);
-  drawCornerRibbon(ctx, margin, belakangY, usableW, slotH, text, ribbonScale, ribbonDarkness);
+  if (watermarkEnabled) {
+    const text = getTujuanText();
+    drawCornerRibbon(ctx, margin, depanY, usableW, slotH, text, ribbonScale, ribbonDarkness);
+    drawCornerRibbon(ctx, margin, belakangY, usableW, slotH, text, ribbonScale, ribbonDarkness);
+  }
 }
 
 function updateState(){
@@ -562,13 +613,14 @@ function updateState(){
 
   const hasImages = !!(imgDepan && imgBelakang);
   const hasTujuan = tujuanInput.value.trim().length > 0;
-  const ready = hasImages && hasTujuan;
+  const needsTujuan = watermarkEnabled;
+  const ready = hasImages && (!needsTujuan || hasTujuan);
 
   btnGenerate.disabled = !ready;
 
   if (ready) {
     statusText.textContent = 'Sedia untuk dimuat turun';
-  } else if (!hasImages && !hasTujuan) {
+  } else if (!hasImages && needsTujuan && !hasTujuan) {
     statusText.textContent = 'Upload kedua-dua gambar dan isi tujuan dahulu';
   } else if (!hasImages) {
     statusText.textContent = 'Upload kedua-dua gambar dahulu';
@@ -607,9 +659,11 @@ function buildFullPageCanvas(){
   drawImageContain(ctx, imgDepan, margin, depanY, usableW, slotH);
   drawImageContain(ctx, imgBelakang, margin, belakangY, usableW, slotH);
 
-  const text = getTujuanText();
-  drawCornerRibbon(ctx, margin, depanY, usableW, slotH, text, ribbonScale, ribbonDarkness);
-  drawCornerRibbon(ctx, margin, belakangY, usableW, slotH, text, ribbonScale, ribbonDarkness);
+  if (watermarkEnabled) {
+    const text = getTujuanText();
+    drawCornerRibbon(ctx, margin, depanY, usableW, slotH, text, ribbonScale, ribbonDarkness);
+    drawCornerRibbon(ctx, margin, belakangY, usableW, slotH, text, ribbonScale, ribbonDarkness);
+  }
 
   return c;
 }
