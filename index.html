@@ -560,12 +560,23 @@ function updateState(){
   tujuanPreviewText.textContent = getTujuanText();
   renderPreview();
 
-  const ready = imgDepan && imgBelakang;
+  const hasImages = !!(imgDepan && imgBelakang);
+  const hasTujuan = tujuanInput.value.trim().length > 0;
+  const ready = hasImages && hasTujuan;
+
   btnGenerate.disabled = !ready;
-  statusText.textContent = ready
-    ? 'Sedia untuk dimuat turun'
-    : 'Upload kedua-dua gambar dan isi tujuan dahulu';
-  statusText.classList.toggle('ok', !!ready);
+
+  if (ready) {
+    statusText.textContent = 'Sedia untuk dimuat turun';
+  } else if (!hasImages && !hasTujuan) {
+    statusText.textContent = 'Upload kedua-dua gambar dan isi tujuan dahulu';
+  } else if (!hasImages) {
+    statusText.textContent = 'Upload kedua-dua gambar dahulu';
+  } else {
+    statusText.textContent = 'Isi tujuan kegunaan dahulu';
+  }
+
+  statusText.classList.toggle('ok', ready);
 }
 
 function buildFullPageCanvas(){
